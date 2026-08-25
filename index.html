@@ -1,638 +1,314 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>灰度日报 · GRAYSCALE AI DAILY — 2026.05.07</title>
-<meta name="description" content="收集最新 AI 资讯，重点覆盖 OpenAI、Google、Microsoft、Anthropic、百度、腾讯、知乎、微博、微信公众号等公开渠道；多源核验后每日精选 5–8 条。">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#0a0a09;
-  --bg-raise:#111110;
-  --bg-invert:#f4f2ea;
-  --ink:#f4f2ea;
-  --ink-dim:#b8b5aa;
-  --ink-mute:#7d7a70;
-  --line:rgba(244,242,234,.16);
-  --line-strong:rgba(244,242,234,.38);
-  --serif:"Noto Serif SC","Songti SC","STZhongsong","STSong","SimSun",Georgia,"Times New Roman",serif;
-  --mono:"IBM Plex Mono","Cascadia Mono",Consolas,"Courier New",monospace;
-  --pad:clamp(1.2rem,4vw,3.2rem);
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:var(--serif);
-  line-height:1.75;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-body::after{ /* grain */
-  content:"";
-  position:fixed;inset:0;
-  pointer-events:none;
-  z-index:60;
-  opacity:.055;
-  mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
-}
-::selection{background:var(--bg-invert);color:var(--bg)}
-::-webkit-scrollbar{width:10px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:#33322e;border:2px solid var(--bg)}
-a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);transition:color .25s,border-color .25s}
-a:hover{color:#fff;border-color:#fff}
-:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
-
-/* ---------- ticker ---------- */
-.ticker{
-  border-bottom:1px solid var(--line);
-  overflow:hidden;
-  white-space:nowrap;
-  background:var(--bg);
-}
-.ticker-track{
-  display:inline-block;
-  padding:.45rem 0;
-  font-family:var(--mono);
-  font-size:.72rem;
-  letter-spacing:.08em;
-  color:var(--ink-dim);
-  animation:ticker 60s linear infinite;
-  will-change:transform;
-}
-.ticker-track b{color:var(--ink);font-weight:500}
-.ticker-track .sep{padding:0 1.2rem;color:var(--ink-mute)}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* ---------- masthead ---------- */
-.wrap{max-width:1140px;margin:0 auto;padding:0 var(--pad)}
-.masthead{
-  padding:clamp(2.4rem,7vw,5.5rem) 0 clamp(1.8rem,4vw,3rem);
-  border-bottom:1px solid var(--line);
-  animation:rise .9s cubic-bezier(.2,.7,.2,1) both;
-}
-.mast-top{
-  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-  font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;
-  color:var(--ink-mute);text-transform:uppercase;
-  padding-bottom:1.2rem;border-bottom:1px solid var(--line);
-}
-.mast-top .live{color:var(--ink);display:inline-flex;align-items:center;gap:.5rem}
-.mast-top .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink);animation:pulse 2.2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.brand-row{
-  display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;
-  padding-top:clamp(1.4rem,3.5vw,2.6rem);
-}
-.brand{
-  font-size:clamp(3rem,9.5vw,7.4rem);
-  font-weight:900;
-  letter-spacing:.04em;
-  line-height:1.02;
-  font-feature-settings:"palt";
-}
-.brand small{
-  display:block;
-  font-family:var(--mono);
-  font-size:clamp(.58rem,1.2vw,.78rem);
-  font-weight:500;
-  letter-spacing:.42em;
-  color:var(--ink-mute);
-  margin-top:1rem;
-}
-.brand-date{
-  text-align:right;
-  font-family:var(--mono);
-  font-size:clamp(.62rem,1.3vw,.82rem);
-  letter-spacing:.12em;
-  color:var(--ink-dim);
-  line-height:2.1;
-  padding-bottom:.4rem;
-}
-.brand-date .big{font-size:clamp(1rem,2.4vw,1.7rem);color:var(--ink);letter-spacing:.06em}
-.subline{
-  margin-top:clamp(1.2rem,3vw,2rem);
-  max-width:56ch;
-  color:var(--ink-dim);
-  font-size:clamp(.86rem,1.5vw,1rem);
-}
-.subline b{color:var(--ink);font-weight:600}
-
-/* ---------- section labels ---------- */
-.section-label{
-  display:flex;align-items:center;gap:1rem;
-  font-family:var(--mono);
-  font-size:.7rem;
-  letter-spacing:.34em;
-  font-weight:500;
-  color:var(--ink);
-  text-transform:uppercase;
-  margin:clamp(2.6rem,5vw,4.2rem) 0 clamp(1.2rem,2.5vw,1.8rem);
-}
-.section-label::after{content:"";flex:1;height:1px;background:var(--line)}
-.section-label span{color:var(--ink-mute);margin-right:.4rem}
-
-/* ---------- index ---------- */
-.index-list{list-style:none}
-.index-item{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  align-items:baseline;gap:1rem 1.4rem;
-  padding:1rem 0;
-  border-bottom:1px solid var(--line);
-  cursor:pointer;
-  transition:padding-left .35s cubic-bezier(.2,.7,.2,1),background .35s;
-  animation:rise .7s cubic-bezier(.2,.7,.2,1) both;
-  animation-delay:calc(.08s + var(--i)*.05s);
-}
-.index-item:hover{padding-left:1rem;background:linear-gradient(90deg,var(--bg-raise),transparent)}
-.index-no{
-  font-family:var(--mono);font-size:.72rem;color:var(--ink-mute);
-  letter-spacing:.1em;
-}
-.index-title{font-size:clamp(.98rem,1.8vw,1.18rem);font-weight:600;letter-spacing:.02em}
-.index-tag{
-  font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;
-  color:var(--ink-dim);border:1px solid var(--line-strong);
-  padding:.18rem .6rem;white-space:nowrap;
-}
-
-/* ---------- news items ---------- */
-.item{
-  position:relative;
-  border:1px solid var(--line);
-  padding:clamp(1.4rem,3vw,2.6rem);
-  margin-bottom:clamp(1.2rem,2.5vw,1.8rem);
-  background:linear-gradient(180deg,var(--bg-raise),var(--bg));
-  overflow:hidden;
-  animation:rise .75s cubic-bezier(.2,.7,.2,1) both;
-  animation-delay:calc(.05s + var(--i)*.06s);
-  transition:border-color .35s,transform .35s;
-}
-.item:hover{border-color:var(--line-strong)}
-.item.feature{
-  background:var(--bg-invert);
-  color:var(--bg);
-  border-color:var(--bg-invert);
-}
-.item.feature .field-key{color:#55534b;border-color:rgba(10,10,9,.32)}
-.item.feature .item-time,.item.feature .src-meta,.item.feature .item-ghost{color:rgba(10,10,9,.35)}
-.item.feature .item-title{color:#101010}
-.item.feature .verify{background:#101010;color:#f4f2ea}
-.item.feature .tag{border-color:rgba(10,10,9,.4);color:#33322e}
-.item.feature a{border-bottom-color:rgba(10,10,9,.4)}
-.item.feature a:hover{color:#000;border-color:#000}
-.item-ghost{
-  position:absolute;top:-1.2rem;right:.6rem;
-  font-family:var(--serif);
-  font-weight:900;
-  font-size:clamp(5.5rem,13vw,10rem);
-  line-height:1;
-  color:rgba(244,242,234,.10);
-  -webkit-text-stroke:1px rgba(244,242,234,.26);
-  pointer-events:none;
-  user-select:none;
-}
-.item.feature .item-ghost{
-  color:rgba(10,10,9,.10);
-  -webkit-text-stroke:1px rgba(10,10,9,.28);
-}
-.item-head{
-  position:relative;
-  display:flex;align-items:center;flex-wrap:wrap;gap:.55rem .9rem;
-  padding-bottom:1rem;margin-bottom:1.1rem;
-  border-bottom:1px solid var(--line);
-}
-.item-no{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;color:var(--ink)}
-.tag{
-  font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;
-  border:1px solid var(--line-strong);color:var(--ink-dim);
-  padding:.16rem .62rem;text-transform:uppercase;
-}
-.item-time{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--ink-mute);margin-left:auto}
-.verify{
-  font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;
-  background:transparent;border:1px solid var(--line-strong);
-  color:var(--ink-dim);padding:.16rem .62rem;white-space:nowrap;
-}
-.item-title{
-  position:relative;
-  font-size:clamp(1.28rem,2.6vw,1.95rem);
-  font-weight:900;
-  line-height:1.45;
-  letter-spacing:.02em;
-  margin-bottom:1.4rem;
-  max-width:26ch;
-}
-.item-fields{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem 2.4rem}
-.field{min-width:0}
-.field.full{grid-column:1/-1}
-.field-key{
-  display:inline-block;
-  font-family:var(--mono);
-  font-size:.62rem;letter-spacing:.3em;
-  color:var(--ink-mute);
-  border-bottom:1px solid var(--line-strong);
-  padding-bottom:.28rem;margin-bottom:.7rem;
-  text-transform:uppercase;
-}
-.field p{font-size:clamp(.84rem,1.35vw,.96rem);color:var(--ink-dim)}
-.field.feature-p p{color:#33322e}
-.src-meta{font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--ink-mute);line-height:2.1}
-.src-meta a{margin-right:1rem;white-space:nowrap}
-
-/* ---------- verify note ---------- */
-.note{
-  border:1px solid var(--line);
-  padding:clamp(1.4rem,3vw,2.2rem);
-  margin:clamp(2.2rem,4vw,3.4rem) 0;
-  background:var(--bg-raise);
-  display:grid;grid-template-columns:auto 1fr;gap:1.4rem 2rem;
-}
-.note-mark{
-  font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
-  writing-mode:vertical-rl;text-orientation:mixed;
-  color:var(--ink-mute);border-right:1px solid var(--line);padding-right:1rem;
-}
-.note h3{font-size:1.05rem;font-weight:900;margin-bottom:.8rem}
-.note p{font-size:.86rem;color:var(--ink-dim);max-width:72ch;margin-bottom:.5rem}
-.note p b{color:var(--ink);font-weight:600}
-.note ol{margin:.4rem 0 .4rem 1.3rem;color:var(--ink-dim);font-size:.84rem}
-
-/* ---------- footer ---------- */
-footer{
-  border-top:1px solid var(--line);
-  margin-top:clamp(2rem,4vw,3rem);
-  padding:2.2rem 0 3.2rem;
-  font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--ink-mute);
-  line-height:2.2;
-}
-.foot-grid{display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
-.foot-brand{color:var(--ink);letter-spacing:.3em;font-weight:500}
-.foot-copy{margin-top:1.2rem;border-top:1px solid var(--line);padding-top:1.2rem;max-width:80ch}
-
-@keyframes rise{
-  from{opacity:0;transform:translateY(22px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-@media (max-width:760px){
-  .index-item{grid-template-columns:auto 1fr}
-  .index-tag{display:none}
-  .item-fields{grid-template-columns:1fr}
-  .brand-row{flex-direction:column;align-items:flex-start}
-  .brand-date{text-align:left}
-  .item-time{margin-left:0;width:100%}
-  .note{grid-template-columns:1fr}
-  .note-mark{writing-mode:horizontal-tb;border-right:none;border-bottom:1px solid var(--line);padding-bottom:.8rem}
-}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>陈天伦 · 齿轮箱高级工程师（求职中）</title>
+  <meta name="description" content="陈天伦，9 年齿轮箱与减速箱设计经验，主导异形、行星齿轮箱新项目开发与量产落地，现任减速箱课长。期待在深圳获得齿轮箱高级工程师岗位。">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip" href="#main">跳到主要内容</a>
 
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    <span><b>OPENAI</b> GPT-5.5 Instant 成为 ChatGPT 新默认模型：幻觉减半、AIME 达 81.2<span class="sep">◆</span><b>ANTHROPIC</b> Claude「Dreaming」上线：Agent 隔夜进化、任务完成率最高提升约 6 倍<span class="sep">◆</span><b>MICROSOFT</b> Xbox 收缩 AI 战线：移动端 Copilot 逐步关停<span class="sep">◆</span><b>GOOGLE</b> 据称打造 7×24 全天候 Gemini 个人代理（代号 Remy）<span class="sep">◆</span><b>TENCENT</b> 混元 Hy3 preview 调用量达 Hy2 十倍<span class="sep">◆</span><b>BAIDU</b> 文心 5.1 Preview 登顶 LMArena 文本榜国内第一<span class="sep">◆</span><b>POLICY</b> 中美被曝考虑启动 AI 官方对话<span class="sep">◆</span><b>CAPITAL</b> 消息称国家大基金洽谈领投 DeepSeek<span class="sep">◆</span></span>
-    <span><b>OPENAI</b> GPT-5.5 Instant 成为 ChatGPT 新默认模型：幻觉减半、AIME 达 81.2<span class="sep">◆</span><b>ANTHROPIC</b> Claude「Dreaming」上线：Agent 隔夜进化、任务完成率最高提升约 6 倍<span class="sep">◆</span><b>MICROSOFT</b> Xbox 收缩 AI 战线：移动端 Copilot 逐步关停<span class="sep">◆</span><b>GOOGLE</b> 据称打造 7×24 全天候 Gemini 个人代理（代号 Remy）<span class="sep">◆</span><b>TENCENT</b> 混元 Hy3 preview 调用量达 Hy2 十倍<span class="sep">◆</span><b>BAIDU</b> 文心 5.1 Preview 登顶 LMArena 文本榜国内第一<span class="sep">◆</span><b>POLICY</b> 中美被曝考虑启动 AI 官方对话<span class="sep">◆</span><b>CAPITAL</b> 消息称国家大基金洽谈领投 DeepSeek<span class="sep">◆</span></span>
-  </div>
-</div>
-
-<main class="wrap">
-
-  <header class="masthead">
-    <div class="mast-top">
-      <span class="live">LIVE · AI BRIEFING</span>
-      <span>SHANGHAI / UTC+8</span>
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a class="nav__brand" href="#top">陈天伦<span class="nav__dot">·</span></a>
+      <nav class="nav__links" aria-label="页面导航">
+        <a href="#about">关于</a>
+        <a href="#experience">经历</a>
+        <a href="#skills">技能</a>
+        <a href="#projects">项目</a>
+        <a href="#credentials">资质</a>
+        <a class="nav__cta" href="#contact">联系我</a>
+      </nav>
     </div>
-    <div class="brand-row">
-      <div class="brand">
-        灰度日报
-        <small>GRAYSCALE · AI DAILY</small>
-      </div>
-      <div class="brand-date">
-        <div class="big">2026.05.07</div>
-        <div>THURSDAY · 星期四</div>
-        <div>ISSUE · 2026.05.07</div>
-        <div>8 ITEMS · 核验 8/8</div>
-      </div>
-    </div>
-    <p class="subline">
-      收集最新 AI 资讯，重点覆盖 <b>OpenAI、Google、Microsoft、Anthropic、百度、腾讯、知乎、微博、微信公众号</b> 等公开渠道；
-      每一条均经多源交叉核验，再按 <b>时间 · 背景 · 内容 · 来源渠道</b> 提炼为 5–8 条精读。
-    </p>
   </header>
 
-  <section aria-label="本期速览">
-    <h2 class="section-label"><span>01</span>INDEX · 本期速览</h2>
-    <ol class="index-list">
-      <li class="index-item" style="--i:0" onclick="location.hash='n01'">
-        <span class="index-no">01</span>
-        <span class="index-title">OpenAI 发布 GPT-5.5 Instant：成为 ChatGPT 新默认模型，幻觉减半</span>
-        <span class="index-tag">OPENAI</span>
-      </li>
-      <li class="index-item" style="--i:1" onclick="location.hash='n02'">
-        <span class="index-no">02</span>
-        <span class="index-title">Anthropic 推出 Claude「Dreaming」：让 Agent 隔夜整理记忆、持续进化</span>
-        <span class="index-tag">ANTHROPIC</span>
-      </li>
-      <li class="index-item" style="--i:2" onclick="location.hash='n03'">
-        <span class="index-no">03</span>
-        <span class="index-title">微软 Xbox 收缩 AI 战线：移动端 Copilot 逐步关停、主机端停止开发</span>
-        <span class="index-tag">MICROSOFT</span>
-      </li>
-      <li class="index-item" style="--i:3" onclick="location.hash='n04'">
-        <span class="index-no">04</span>
-        <span class="index-title">谷歌被曝打造 7×24 全天候 Gemini 个人代理，内部代号 Remy</span>
-        <span class="index-tag">GOOGLE</span>
-      </li>
-      <li class="index-item" style="--i:4" onclick="location.hash='n05'">
-        <span class="index-no">05</span>
-        <span class="index-title">腾讯混元 Hy3 preview 上线两周 Token 调用量达 Hy2 十倍</span>
-        <span class="index-tag">TENCENT</span>
-      </li>
-      <li class="index-item" style="--i:5" onclick="location.hash='n06'">
-        <span class="index-no">06</span>
-        <span class="index-title">百度文心 5.1 Preview 登顶 LMArena 文本榜国内第一：1476 分</span>
-        <span class="index-tag">BAIDU</span>
-      </li>
-      <li class="index-item" style="--i:6" onclick="location.hash='n07'">
-        <span class="index-no">07</span>
-        <span class="index-title">中美被曝考虑启动 AI 官方对话，外交部：双方就访华事保持沟通</span>
-        <span class="index-tag">POLICY</span>
-      </li>
-      <li class="index-item" style="--i:7" onclick="location.hash='n08'">
-        <span class="index-no">08</span>
-        <span class="index-title">消息称国家大基金洽谈领投 DeepSeek 首轮融资，估值约 450 亿美元</span>
-        <span class="index-tag">CAPITAL</span>
-      </li>
-    </ol>
-  </section>
+  <main id="main">
 
-  <section aria-label="本期精选">
-    <h2 class="section-label"><span>02</span>BRIEFING · 本期精选</h2>
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="hero__inner">
+        <div class="hero__copy">
+          <p class="kicker">CHEN TIANLUN · GEARBOX ENGINEER</p>
+          <h1 class="hero__title">让每一级传动<br>都精准可靠</h1>
+          <p class="hero__sub">
+            9 年齿轮箱与减速箱设计经验，主导异形、行星齿轮箱新项目从参数计算、
+            结构设计到量产落地；熟悉塑料件、钣金、压铸与机加工艺。
+          </p>
+          <div class="hero__cta">
+            <a class="btn" href="#contact">联系我</a>
+            <a class="btn btn--ghost" href="#projects">看项目</a>
+          </div>
+          <ul class="hero__tags" aria-label="核心标签">
+            <li>齿轮箱开发与量产</li>
+            <li>行星 · 异形齿轮箱</li>
+            <li>SolidWorks · Pro/E · CAD</li>
+            <li>塑料件 · 钣金 · 压铸工艺</li>
+          </ul>
+        </div>
 
-    <article class="item feature" id="n01" style="--i:0">
-      <div class="item-ghost">01</div>
-      <header class="item-head">
-        <span class="item-no">01</span>
-        <span class="tag">OpenAI</span>
-        <span class="tag">模型</span>
-        <time class="item-time">2026.05.05 · 美东</time>
-        <span class="verify">✓ 多源核验</span>
-      </header>
-      <h3 class="item-title">ChatGPT 换上新默认模型：GPT-5.5 Instant 幻觉减半、AIME 达 81.2</h3>
-      <div class="item-fields">
-        <div class="field feature-p">
-          <span class="field-key">背景</span>
-          <p>5 月 5 日，OpenAI 发布新一代即时模型 GPT-5.5 Instant，并作为 ChatGPT 的默认模型向用户开放。这是对今年 3 月推出的 GPT-5.3 Instant 的迭代，重点优化高频消费场景下的速度、准确度与记忆表现，被视为 OpenAI 面向日常用户的又一次“无感升级”。</p>
-        </div>
-        <div class="field feature-p">
-          <span class="field-key">内容</span>
-          <p>内部评测显示，在医疗、法律、金融等高风险提示上，GPT-5.5 Instant 产生的幻觉声明较上一代减少 52.5%；AIME 2025 竞赛数学得分从 65.4 升至 81.2，MMMU-Pro 多模态推理从 69.2% 提升至 76%。官方同时强调其记忆能力更强、回答更简洁，用户此前标记过的错误对话亦有明显改善。</p>
-        </div>
-        <div class="field full">
-          <span class="field-key">来源渠道</span>
-          <p class="src-meta">OpenAI 官方发布 · 36氪 · C114 · eWEEK<br>
-          <a href="https://36kr.com/p/3797049063464192" target="_blank" rel="noopener">36氪：GPT-5.5 Instant 发布</a>
-          <a href="https://www.c114.net.cn/industry/80015.html" target="_blank" rel="noopener">C114：新默认模型细节</a>
-          <a href="https://www.eweek.com/news/openai-gpt-55-instant-chatgpt-default-model/" target="_blank" rel="noopener">eWEEK：OpenAI Unveils GPT-5.5 Instant</a></p>
+        <aside class="hero__card" aria-label="求职名片">
+          <span class="hero__stamp">求职中</span>
+          <p class="hero__card-name">陈天伦</p>
+          <dl class="hero__card-list">
+            <div><dt>求职意向</dt><dd>齿轮箱高级工程师</dd></div>
+            <div><dt>期望城市</dt><dd>深圳</dd></div>
+            <div><dt>工作年限</dt><dd>9 年</dd></div>
+            <div><dt>联系电话</dt><dd>15622710745</dd></div>
+          </dl>
+          <p class="hero__card-note">简历之外的完整故事，欢迎继续往下看。</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="section__head">
+        <span class="section__num">01</span>
+        <div>
+          <p class="kicker">ABOUT</p>
+          <h2>关于我</h2>
         </div>
       </div>
-    </article>
-
-    <article class="item" id="n02" style="--i:1">
-      <div class="item-ghost">02</div>
-      <header class="item-head">
-        <span class="item-no">02</span>
-        <span class="tag">Anthropic</span>
-        <span class="tag">智能体</span>
-        <time class="item-time">2026.05.06 · 旧金山</time>
-        <span class="verify">✓ 多源核验</span>
-      </header>
-      <h3 class="item-title">Claude 学会“睡眠”：Dreaming 让 Agent 隔夜整理记忆，任务完成率最高提升约 6 倍</h3>
-      <div class="item-fields">
-        <div class="field">
-          <span class="field-key">背景</span>
-          <p>Anthropic 5 月 6 日在旧金山举行 Code w/ Claude 开发者大会，集中发布 Claude Code 与托管智能体平台的系列更新，并宣布与 SpaceX 达成算力合作，租赁位于得克萨斯州的 Colossus 1 数据中心全部算力（约 22 万张 GPU），为大规模智能体运行提供支撑。</p>
-        </div>
-        <div class="field">
-          <span class="field-key">内容</span>
-          <p>新增“Dreaming”研究功能：Agent 在任务间隙进入类似人类 REM 睡眠的状态，自动读取记忆库与最多 100 个历史会话，完成合并重复数据、更新过时条目、提炼宏观规律三步，生成全新记忆库；新记忆不会直接覆盖原始数据，开发者可审查后再应用。配套 Outcomes 自动评分系统使任务成功率最高提升 10 个百分点（docx +8.4%、pptx +10.1%），法律科技公司 Harvey 应用后任务完成率增长约 6 倍；Claude Code 使用时长限额同步翻倍。</p>
-        </div>
-        <div class="field full">
-          <span class="field-key">来源渠道</span>
-          <p class="src-meta">Code w/ Claude 开发者大会 · 快科技/C114 · 36氪 · 鞭牛士<br>
-          <a href="https://www.c114.net.cn/industry/80483.html" target="_blank" rel="noopener">C114：Claude 记忆优化任务完成率飙升</a>
-          <a href="https://m.36kr.com/p/3798934437796873" target="_blank" rel="noopener">36氪：Claude 正在「做梦」</a>
-          <a href="https://www.bianews.com/news/details?id=237363" target="_blank" rel="noopener">鞭牛士：睡一觉疯狂进化</a></p>
+      <div class="about__grid">
+        <p class="about__lead reveal">
+          我是陈天伦，30 岁，机械制造与自动化专业出身。过去 9 年，我一直在和齿轮、
+          减速箱打交道——从一张图纸，到一套量产的传动系统。
+        </p>
+        <div class="about__body reveal">
+          <p>
+            我主导过异形齿轮箱与行星齿轮箱的新项目开发：可行性评估、参数计算、
+            电机选型、结构设计、图纸制作，再到手工样品、小批量试作与量产导入。
+            我熟悉塑料件、钣金、压铸和机加工艺，也习惯用测量工具去验证每一个尺寸。
+          </p>
+          <p>
+            现在，我是减速箱课长，带着团队专攻割草机减速箱项目，也编写了多项专利。
+            如果你在寻找一位能把项目从计算做到量产落地的齿轮箱工程师，欢迎联系我。
+          </p>
         </div>
       </div>
-    </article>
+    </section>
 
-    <article class="item" id="n03" style="--i:2">
-      <div class="item-ghost">03</div>
-      <header class="item-head">
-        <span class="item-no">03</span>
-        <span class="tag">Microsoft</span>
-        <span class="tag">产品</span>
-        <time class="item-time">2026.05.06 · 美东</time>
-        <span class="verify">✓ 多源核验</span>
-      </header>
-      <h3 class="item-title">Xbox 收缩 AI 战线：移动端 Copilot 逐步关停，主机端开发终止</h3>
-      <div class="item-fields">
-        <div class="field">
-          <span class="field-key">背景</span>
-          <p>微软去年推出 Gaming Copilot，覆盖 PC 与移动端，原计划进一步登陆 Xbox 主机；新任 Xbox 首席执行官阿萨·夏尔马（Asha Sharma）上任后持续调整游戏业务与 AI 投入的优先级，市场对 Copilot 在游戏场景的定位早有疑问。</p>
-        </div>
-        <div class="field">
-          <span class="field-key">内容</span>
-          <p>5 月 6 日，夏尔马在 X 平台发文确认：移动端 Gaming Copilot 将开始逐步关停，主机端 Copilot 的开发工作同步终止，理由是聚焦与未来方向一致的核心功能。官方措辞为“We will begin winding down Copilot on mobile and will stop development of Copilot on console”，标志着 Xbox 的 AI 助手尝试明显收缩。</p>
-        </div>
-        <div class="field full">
-          <span class="field-key">来源渠道</span>
-          <p class="src-meta">Xbox 官方声明 · IT之家 · PCMag · 超能网<br>
-          <a href="https://m.ithome.com/html/946658.htm" target="_blank" rel="noopener">IT之家：Xbox 主动收缩战线</a>
-          <a href="https://uk.pcmag.com/ai/164786/your-xbox-wont-get-microsoft-copilot-ai-features-after-all" target="_blank" rel="noopener">PCMag：Your Xbox Won't Get Copilot</a>
-          <a href="https://www.expreview.com/105644.html" target="_blank" rel="noopener">超能网：关停 Gaming Copilot</a></p>
+    <!-- Stats -->
+    <section class="stats" aria-label="数字亮点">
+      <div class="stats__item reveal">
+        <strong>9<span class="stats__unit">年</span></strong>
+        <p>齿轮箱行业经验</p>
+      </div>
+      <div class="stats__item reveal">
+        <strong>4<span class="stats__unit">个</span></strong>
+        <p>代表项目<br>3 款已量产</p>
+      </div>
+      <div class="stats__item reveal">
+        <strong>3+<span class="stats__unit">项</span></strong>
+        <p>专利<br>申请成功</p>
+      </div>
+      <div class="stats__item reveal">
+        <strong>2<span class="stats__unit">段</span></strong>
+        <p>任职经历<br>现任减速箱课长</p>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="section" id="experience">
+      <div class="section__head">
+        <span class="section__num">02</span>
+        <div>
+          <p class="kicker">EXPERIENCE</p>
+          <h2>工作经历</h2>
         </div>
       </div>
-    </article>
 
-    <article class="item" id="n04" style="--i:3">
-      <div class="item-ghost">04</div>
-      <header class="item-head">
-        <span class="item-no">04</span>
-        <span class="tag">Google</span>
-        <span class="tag">智能体</span>
-        <time class="item-time">2026.05.06 曝光 · 据知情人士</time>
-        <span class="verify">消息称 · 待确认</span>
-      </header>
-      <h3 class="item-title">谷歌被曝为 Gemini 打造 7×24 全天候“个人代理”，内部代号 Remy</h3>
-      <div class="item-fields">
-        <div class="field">
-          <span class="field-key">背景</span>
-          <p>智能助手与 Agent 竞争白热化，ChatGPT、Claude 等先后推出可长时间驻留的智能体能力。谷歌被认为需要一款能在后台持续运行、跨应用协同的个人代理，以强化搜索、Android 与 Workspace 生态的协同优势。</p>
-        </div>
-        <div class="field">
-          <span class="field-key">内容</span>
-          <p>据知情人士 5 月 6 日透露，谷歌正为 Gemini 打造一个 7×24 小时全天候运行的人工智能“个人代理”，内部描述称“Remy is your 24/7 personal agent for work, school, and daily life, powered by Gemini”，由 Google AI 团队主导，具备跨应用协调与主动响应能力。该项目尚未获得谷歌官方证实，属“消息称”阶段。</p>
-        </div>
-        <div class="field full">
-          <span class="field-key">来源渠道</span>
-          <p class="src-meta">知情人士（据媒体）· 东方财富 · 九方智投 · eWEEK<br>
-          <a href="https://fund.eastmoney.com/a/202605063728014344.html" target="_blank" rel="noopener">东方财富：谷歌打造 7×24 个人代理</a>
-          <a href="https://www.9fzt.com/724info/c7337aa5fd10f0cdf65fd0688c6f6673.html" target="_blank" rel="noopener">九方智投：快讯</a>
-          <a href="https://www.eweek.com/news/google-gemini-remy-ai-agent/" target="_blank" rel="noopener">eWEEK：Gemini 24/7 Agent 'Remy'</a></p>
+      <div class="exp">
+        <article class="exp__item reveal">
+          <header class="exp__head">
+            <div>
+              <h3>深圳市精锐昌精密智能有限公司</h3>
+              <p class="exp__meta">机械工程师（减速箱课长）· 2023.09 – 至今</p>
+            </div>
+            <span class="exp__tag">当前任职</span>
+          </header>
+          <ul class="exp__list">
+            <li>负责公司减速箱项目跟进，带领两位减速箱工程师开发割草机减速箱与新产品设计</li>
+            <li>独立设计行星减速箱、蜗杆、伞齿等结构，可根据客户空间全新定制减速箱</li>
+            <li>主导割草机减速箱项目开发并量产落地</li>
+            <li>编写枕头升降电机、N20 直角减速箱、法兰与输出轴轮毂等多项专利并申请成功</li>
+          </ul>
+          <p class="exp__migrate">
+            沉淀：<strong>从方案到量产的全流程把控</strong>，
+            以及带队开发与专利产出的工程能力。
+          </p>
+        </article>
+
+        <article class="exp__item reveal">
+          <header class="exp__head">
+            <div>
+              <h3>佛山华永科技有限公司</h3>
+              <p class="exp__meta">机械设计师 · 2016.12 – 至今</p>
+            </div>
+            <span class="exp__tag">前一段</span>
+          </header>
+          <ul class="exp__list">
+            <li>7 年异形齿轮箱与行星齿轮箱设计与制造经验，熟悉机械传动与力学分析</li>
+            <li>熟练运用 CAD、SolidWorks 等机械设计软件，可完成复杂传动设计</li>
+            <li>负责项目管理，协调各部门完成项目任务</li>
+          </ul>
+          <p class="exp__migrate">
+            沉淀：<strong>扎实的传动计算与结构设计功底</strong>，
+            覆盖 7 年异形 / 行星齿轮箱设计制造。
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="section" id="skills">
+      <div class="section__head">
+        <span class="section__num">03</span>
+        <div>
+          <p class="kicker">SKILLS</p>
+          <h2>技能</h2>
         </div>
       </div>
-    </article>
 
-    <article class="item" id="n05" style="--i:4">
-      <div class="item-ghost">05</div>
-      <header class="item-head">
-        <span class="item-no">05</span>
-        <span class="tag">腾讯</span>
-        <span class="tag">模型</span>
-        <time class="item-time">2026.05.07</time>
-        <span class="verify">✓ 多源核验</span>
-      </header>
-      <h3 class="item-title">混元 Hy3 preview 上线两周 Token 调用量达 Hy2 十倍，代码与 Agent 场景增 16.5 倍</h3>
-      <div class="item-fields">
-        <div class="field">
-          <span class="field-key">背景</span>
-          <p>腾讯混元于 4 月底上线新一代预览模型 Hy3 preview（总参数 2950 亿、激活参数 210 亿、上下文 256K），被视为混元“技术重构”的阶段性成果，也是其与开源模型直接竞争的主力型号。</p>
+      <div class="skills">
+        <div class="skills__col reveal">
+          <h3>设计软件</h3>
+          <ul class="tags">
+            <li>SolidWorks</li>
+            <li>Pro/E（Creo）</li>
+            <li>AutoCAD</li>
+            <li>KISSsoft</li>
+          </ul>
         </div>
-        <div class="field">
-          <span class="field-key">内容</span>
-          <p>5 月 7 日混元官方公布：上线以来 Token 调用总量已超过上一代模型 Hy2 的 10 倍，其中代码与智能体类场景增长尤为明显，WorkBuddy、CodeBuddy 及 Qclaw 等应用中的总增幅超过 16.5 倍；OpenRouter 公开数据亦显示其增长与调用表现居前。</p>
+        <div class="skills__col reveal">
+          <h3>工艺与检测</h3>
+          <ul class="tags">
+            <li>塑料件</li>
+            <li>钣金</li>
+            <li>压铸</li>
+            <li>机加工</li>
+            <li>三坐标 · 工具显微镜</li>
+            <li>游标卡尺 · 千分尺 · 塞规</li>
+          </ul>
         </div>
-        <div class="field full">
-          <span class="field-key">来源渠道</span>
-          <p class="src-meta">腾讯混元官方（微信公众号/开发者社区）· 海外网 · 36氪<br>
-          <a href="https://cloud.tencent.cn/developer/article/2665447" target="_blank" rel="noopener">腾讯云开发者社区：Hy3 preview 调用增长 10 倍</a>
-          <a href="https://m.haiwainet.cn/middle/3541089/2026/0507/content_32950853_1.html" target="_blank" rel="noopener">海外网：腾讯混元最新数据</a>
-          <a href="https://36kr.com/newsflashes/3798591810067718" target="_blank" rel="noopener">36氪：快讯</a></p>
+        <div class="skills__goal reveal">
+          <h3>软技能</h3>
+          <p class="skills__goal-main">项目管理</p>
+          <p class="skills__goal-note">团队带领 · 跨部门协调 · 客户需求转化 · 专利编写</p>
         </div>
       </div>
-    </article>
+    </section>
 
-    <article class="item" id="n06" style="--i:5">
-      <div class="item-ghost">06</div>
-      <header class="item-head">
-        <span class="item-no">06</span>
-        <span class="tag">百度</span>
-        <span class="tag">模型</span>
-        <time class="item-time">2026.04.30 成绩 · 持续受关注</time>
-        <span class="verify">✓ 多源核验</span>
-      </header>
-      <h3 class="item-title">文心 5.1 Preview 登顶 LMArena 文本榜国内第一：1476 分、预训练成本仅约 6%</h3>
-      <div class="item-fields">
-        <div class="field">
-          <span class="field-key">背景</span>
-          <p>百度基于“多维弹性预训练”技术开发文心 5.1，将总参数压缩至约 1/3、激活参数压缩至约 1/2，预训练成本仅为业界同规模模型的约 6%；Create 2026 百度 AI 开发者大会定于 5 月 13 日至 14 日在北京举行，市场对其正式版发布保持关注。</p>
-        </div>
-        <div class="field">
-          <span class="field-key">内容</span>
-          <p>4 月 30 日，文心 5.1 Preview 以 1476 分登上 LMArena 文本榜国内第一，超越 GPT-5.5、DeepSeek-V4-Pro 等多款国内外主流模型，成为榜单前十五名中唯一入围的国产模型；其 Agent、搜索与知识能力被视作此次排名的关键支撑。</p>
-        </div>
-        <div class="field full">
-          <span class="field-key">来源渠道</span>
-          <p class="src-meta">百度官方 · LMArena 榜单 · 量子位 · OFweek<br>
-          <a href="https://www.qbitai.com/2026/05/414496.html" target="_blank" rel="noopener">量子位：文心 5.1 搜索能力登顶国内</a>
-          <a href="https://www.ofweek.com/ai/2026-05/ART-201718-8140-30687178.html" target="_blank" rel="noopener">OFweek：李彦宏打出效率牌</a></p>
+    <!-- Projects -->
+    <section class="section" id="projects">
+      <div class="section__head">
+        <span class="section__num">04</span>
+        <div>
+          <p class="kicker">PROJECTS</p>
+          <h2>代表项目</h2>
         </div>
       </div>
-    </article>
 
-    <article class="item" id="n07" style="--i:6">
-      <div class="item-ghost">07</div>
-      <header class="item-head">
-        <span class="item-no">07</span>
-        <span class="tag">政策</span>
-        <span class="tag">中美</span>
-        <time class="item-time">2026.05.07 · 外交部记者会</time>
-        <span class="verify">✓ 多源核验</span>
-      </header>
-      <h3 class="item-title">中美被曝考虑启动 AI 官方对话，外交部：双方就特朗普总统访华事保持沟通</h3>
-      <div class="item-fields">
-        <div class="field">
-          <span class="field-key">背景</span>
-          <p>《华尔街日报》报道称，中美双方正考虑在即将于北京举行的元首会晤期间启动有关人工智能的官方讨论，美方拟由财政部长贝森特牵头；报道引发市场对两国 AI 治理与产业合作走向的关注。</p>
-        </div>
-        <div class="field">
-          <span class="field-key">内容</span>
-          <p>5 月 7 日外交部例行记者会上，发言人林剑回应相关提问时表示“中美双方就特朗普总统访华事保持着沟通”，未进一步证实或否认 AI 对话的具体安排，官方口径保持谨慎。</p>
-        </div>
-        <div class="field full">
-          <span class="field-key">来源渠道</span>
-          <p class="src-meta">外交部例行记者会 · 澎湃新闻 · 新华报业网<br>
-          <a href="https://m.thepaper.cn/newsDetail_forward_33105606" target="_blank" rel="noopener">澎湃新闻：外交部回应</a>
-          <a href="https://www.xhby.net/content/s69fc3bdce4b0bc317c981186.html" target="_blank" rel="noopener">新华报业网：中美双方保持沟通</a></p>
+      <div class="projects">
+        <article class="project reveal">
+          <span class="project__num">01</span>
+          <h3>环形塑胶齿轮箱系列</h3>
+          <p class="project__meta">产品开发设计工程师 · 2017.03 – 至今</p>
+          <p class="project__row"><b>背景</b>根据客户外形尺寸与扭力转速要求，设计塑胶环形齿轮箱。</p>
+          <p class="project__row"><b>方案</b>排列齿轮组合，从模数、齿数到结构逐一匹配客户需求。</p>
+          <p class="project__row"><b>成果</b>设计多款塑胶异形齿轮箱并成功量产。</p>
+        </article>
+        <article class="project reveal">
+          <span class="project__num">02</span>
+          <h3>智能眼镜电机项目</h3>
+          <p class="project__meta">设计开发 · 2021.01 – 2022.04</p>
+          <p class="project__row"><b>背景</b>智能眼镜电机，外径仅 6mm，需要小型化且易量产。</p>
+          <p class="project__row"><b>方案</b>塑胶齿轮传动 + 螺杆带动滑块实现镜片左右移动，规避行星齿轮小组装难题。</p>
+          <p class="project__row"><b>成果</b>从设计开发样品到成功量产。</p>
+        </article>
+        <article class="project reveal">
+          <span class="project__num">03</span>
+          <h3>行星齿轮电机项目</h3>
+          <p class="project__meta">设计开发工程师 · 2020.03 – 2022.04</p>
+          <p class="project__row"><b>背景</b>按客户特性要求，设计合适减速比的行星齿轮箱。</p>
+          <p class="project__row"><b>方案</b>综合考虑外形与齿轮强度，选用合适模数，从零开始设计减速比。</p>
+          <p class="project__row"><b>成果</b>项目成功开发，满足客户特性要求。</p>
+        </article>
+        <article class="project reveal">
+          <span class="project__num">04</span>
+          <h3>智能门锁电机项目</h3>
+          <p class="project__meta">产品设计工程师 · 2019.03 – 2020.04</p>
+          <p class="project__row"><b>背景</b>金属异形齿轮箱电机用于智能门锁，需高强度耐久与高扭力。</p>
+          <p class="project__row"><b>方案</b>空心杯电机搭配金属齿轮，完成样品设计开发。</p>
+          <p class="project__row"><b>成果</b>开发智能门锁电机样品并成功量产。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Credentials -->
+    <section class="section" id="credentials">
+      <div class="section__head">
+        <span class="section__num">05</span>
+        <div>
+          <p class="kicker">CREDENTIALS</p>
+          <h2>资质与专利</h2>
         </div>
       </div>
-    </article>
 
-    <article class="item" id="n08" style="--i:7">
-      <div class="item-ghost">08</div>
-      <header class="item-head">
-        <span class="item-no">08</span>
-        <span class="tag">资本</span>
-        <span class="tag">大模型</span>
-        <time class="item-time">2026.05.06–05.07 · 消息称</time>
-        <span class="verify">消息称 · 待确认</span>
-      </header>
-      <h3 class="item-title">消息称国家大基金洽谈领投 DeepSeek 首轮融资，估值约 450 亿美元</h3>
-      <div class="item-fields">
-        <div class="field">
-          <span class="field-key">背景</span>
-          <p>成立近三年、此前坚持不进行外部融资的 DeepSeek，近期首度传出开放融资的消息；据金融时报援引知情人士，其此前的估值约为 200 亿美元，此轮谈判中的投前估值大幅提升。</p>
-        </div>
-        <div class="field">
-          <span class="field-key">内容</span>
-          <p>金融时报 5 月 6 日报道，国家集成电路产业投资基金（国家大基金）正洽谈领投 DeepSeek 首轮融资，投前估值约 450 亿美元；融资细节与参与方尚未最终敲定，DeepSeek 与投资方均未置评。此类资本动向处于“消息称”阶段，应以官方确认为准。</p>
-        </div>
-        <div class="field full">
-          <span class="field-key">来源渠道</span>
-          <p class="src-meta">金融时报（援引知情人士）· 澎湃新闻 · Bloomberg<br>
-          <a href="https://m.thepaper.cn/newsDetail_forward_33111786" target="_blank" rel="noopener">澎湃新闻：450 亿美元估值</a>
-          <a href="https://www.bloomberg.com/news/articles/2026-05-06/china-chip-fund-in-talks-to-lead-mega-deepseek-funding-ft-says" target="_blank" rel="noopener">Bloomberg：China Chip Fund in Talks</a></p>
+      <div class="cred">
+        <p class="cred__note reveal">
+          项目之外，还有一些沉淀下来的成果与认证。
+        </p>
+        <div class="cred__grid">
+          <div class="cred__patents reveal">
+            <h3>专利（申请成功）</h3>
+            <ul>
+              <li>枕头升降电机<span class="cred__tag">专利</span></li>
+              <li>N20 直角减速箱<span class="cred__tag">专利</span></li>
+              <li>法兰与输出轴轮毂<span class="cred__tag">专利</span></li>
+            </ul>
+          </div>
+          <div class="cred__certs reveal">
+            <h3>资格证书</h3>
+            <ul class="tags">
+              <li>制图员</li>
+              <li>CAD 技能二级</li>
+              <li>CAD 技能三级</li>
+              <li>三维建模师</li>
+            </ul>
+            <h3 class="cred__edu-head">教育背景</h3>
+            <p class="cred__edu">河海大学继续教育学院 · 本科 · 机械制造与自动化<span>2017 – 2020</span></p>
+            <p class="cred__edu">广东水利电力职业技术学院 · 大专 · 机械制造与自动化<span>2014 – 2017</span></p>
+          </div>
         </div>
       </div>
-    </article>
+    </section>
 
-  </section>
+    <!-- Contact -->
+    <section class="contact" id="contact">
+      <div class="contact__inner">
+        <p class="kicker">CONTACT</p>
+        <h2>欢迎联系我</h2>
+        <p class="contact__sub">
+          无论是全职岗位、项目合作，还是技术交流，都欢迎随时联系。
+        </p>
+        <div class="contact__links">
+          <a href="tel:15622710745">15622710745</a>
+          <a href="mailto:948019608@qq.com">948019608@qq.com</a>
+        </div>
+        <p class="contact__meta">现居深圳 · 联系方式仅用于招聘与合作</p>
+      </div>
+    </section>
 
-  <section class="note" aria-label="核验说明">
-    <div class="note-mark">VERIFICATION NOTE</div>
-    <div>
-      <h3>核验说明 · 每一条都经过查证后才上版</h3>
-      <p>采集流程：<b>公开渠道检索 → 原始来源比对 → 多源交叉核验 → 按时间/背景/内容提炼 → 标注来源渠道</b>。</p>
-      <p>本期 8 条中，6 条达到<b>多源交叉核验</b>标准（≥2 个独立信源口径一致）；谷歌 Remy、DeepSeek 融资两条为未经官方证实的消息，已在正文与核验标记中标注“消息称/据知情人士”，并附原始报道链接供复核。</p>
-      <p>覆盖渠道：OpenAI 官方发布 / 36氪 / C114 / 快科技 / IT之家 / PCMag / 超能网 / 腾讯混元官方渠道（微信公众号）· 腾讯云开发者社区 / 东方财富 / 九方智投 / eWEEK / 量子位 / OFweek / 外交部例行记者会 / 澎湃新闻 / 新华报业网 / 金融时报 / Bloomberg 等。</p>
-    </div>
-  </section>
+  </main>
 
-</main>
+  <footer class="footer">
+    <p>© 2026 陈天伦 · 求职展示站</p>
+    <p>把传动做到可靠</p>
+  </footer>
 
-<footer>
-  <div class="wrap">
-    <div class="foot-grid">
-      <span class="foot-brand">灰度日报 · GRAYSCALE AI DAILY</span>
-      <span>ISSUE 2026.05.07 · GENERATED 23:30 CST</span>
-    </div>
-    <p class="foot-copy">本页内容基于公开报道整理，仅供信息参考，不构成投资建议；引用的第三方报道版权归原作者所有。部分涉及预测与传闻的信息（产品计划、融资安排等）尚未获官方确认，请以官方公告为准。</p>
-  </div>
-</footer>
-
+  <script src="script.js"></script>
 </body>
 </html>
