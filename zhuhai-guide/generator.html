@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="输入城市，自动生成保姆级旅游攻略网页。">
+  <title>AI 城市攻略生成器</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;500;600;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="generator.css">
+</head>
+<body>
+  <header class="generator-header">
+    <div class="generator-header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">AI</span>
+        <span class="brand-copy">
+          <strong>城市攻略生成器</strong>
+          <small>输入城市，自动生成网页</small>
+        </span>
+      </a>
+      <a class="back-link" href="index.html">返回珠海攻略</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="generator-panel section-wrap">
+      <div class="generator-intro">
+        <p class="section-en">DEEPSEEK · AUTO GUIDE</p>
+        <h1>输入一个城市，<br>自动生成保姆级攻略</h1>
+        <p>调用 DeepSeek 生成结构化内容，再按复古文艺模板渲染成网页。生成结果仅供旅行参考，具体信息请以官方为准。</p>
+      </div>
+
+      <form id="generator-form" class="generator-form">
+        <label for="city-input">城市名称</label>
+        <div class="input-row">
+          <input id="city-input" name="city" type="text" placeholder="例如：成都、杭州、西安" autocomplete="off" required>
+          <button id="generate-btn" type="submit">生成网页</button>
+        </div>
+        <p id="status" class="status" role="status" aria-live="polite">服务端已接入 DeepSeek，API Key 不会暴露在网页中。</p>
+      </form>
+    </section>
+
+    <section id="guide-output" class="guide-output" hidden></section>
+  </main>
+
+  <footer class="site-footer generator-footer">
+    <div>
+      <strong>AI 城市攻略生成器</strong>
+      <p>内容由 DeepSeek 自动生成，仅供参考；价格、班次、开放时间等请以当地官方最新公告为准。</p>
+    </div>
+    <p class="credit">生成结果可能包含模型估算的坐标，精确路线请以地图 App 为准。</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="generator.js"></script>
+</body>
+</html>

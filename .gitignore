@@ -1,2 +1,4 @@
 preview/
 tmp/
+.env
+node_modules/
