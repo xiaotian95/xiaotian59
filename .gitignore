@@ -1,0 +1,8 @@
+node_modules/
+.env
+.netlify/
+.DS_Store
+*.log
+dist/
+deno.lock
+参考中奖图片/

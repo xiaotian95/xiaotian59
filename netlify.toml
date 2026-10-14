@@ -1,0 +1,21 @@
+[build]
+  command = "echo \"No build step\""
+  publish = "public"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/api?action=health"
+  status = 200
+
+[[redirects]]
+  from = "/api/draw"
+  to = "/.netlify/functions/api?action=draw"
+  status = 200
+
+[[redirects]]
+  from = "/api/recognize"
+  to = "/.netlify/functions/api?action=recognize"
+  status = 200

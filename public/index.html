@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ef4444" />
+    <title>彩票图片识别中奖</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="hero-badge">📸 拍照即核</div>
+        <h1>彩票图片识别中奖</h1>
+        <p>上传彩票照片，自动识别号码，一键核对双色球 / 大乐透</p>
+        <button class="icon-button settings-trigger" id="settingsTrigger" type="button" aria-label="设置">⚙️ 设置</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="card settings-card" id="settingsCard" hidden>
+        <div class="card-title">
+          <span>🔑 火山方舟设置</span>
+          <button class="text-button" type="button" id="closeSettings">收起</button>
+        </div>
+        <p class="hint">
+          API Key 仅保存在当前浏览器，并随识别请求发送到本地服务；请勿在公共电脑保存。
+        </p>
+        <div class="field-grid">
+          <label class="field">
+            <span>API Key</span>
+            <input id="apiKeyInput" type="password" autocomplete="off" placeholder="留空则使用 .env 配置" />
+          </label>
+          <label class="field">
+            <span>视觉模型</span>
+            <input id="modelInput" type="text" value="doubao-seed-2-0-lite-260428" />
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">
+          <span>1️⃣ 选择玩法与开奖日期</span>
+        </div>
+        <div class="field-grid two-col">
+          <label class="field">
+            <span>彩票类型</span>
+            <select id="lotteryType">
+              <option value="ssq">双色球（6红 + 1蓝）</option>
+              <option value="dlt">大乐透（5前区 + 2后区）</option>
+              <option value="auto">自动识别类型</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>开奖日期（可选，留空自动识别）</span>
+            <input id="drawDate" type="date" />
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">
+          <span>2️⃣ 上传彩票照片</span>
+          <span class="count-pill" id="fileCount">0 张</span>
+        </div>
+        <label class="uploader" id="uploader">
+          <input id="fileInput" type="file" accept="image/*" multiple hidden />
+          <div class="uploader-icon">📷</div>
+          <div class="uploader-title">点击拍照或选择图片</div>
+          <div class="uploader-sub">支持一次多张；一张照片里也可有多张彩票</div>
+        </label>
+        <div class="preview-grid" id="previewGrid"></div>
+        <div class="actions">
+          <button class="primary-button" id="checkButton" type="button">🔍 识别并核对</button>
+          <button class="ghost-button" id="clearButton" type="button">清空图片</button>
+        </div>
+        <p class="loading-text" id="loadingText" hidden>正在识别和核对，请稍候…</p>
+      </section>
+
+      <section class="card result-card" id="resultCard" hidden>
+        <div class="card-title">
+          <span>3️⃣ 核对结果</span>
+          <button class="text-button" type="button" id="closeResult">关闭</button>
+        </div>
+        <div id="drawSummary" class="draw-summary"></div>
+        <div id="resultList"></div>
+      </section>
+
+      <section class="card history-card">
+        <div class="card-title">
+          <span>🕘 历史记录</span>
+          <button class="text-button" type="button" id="clearHistory">清空</button>
+        </div>
+        <div id="historyList" class="history-list">
+          <p class="empty-text">暂无记录</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" hidden></div>
+    <script src="/app.js"></script>
+  </body>
+</html>

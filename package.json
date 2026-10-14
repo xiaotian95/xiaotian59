@@ -1,0 +1,14 @@
+{
+  "name": "lottery-ticket-checker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "拍照识别双色球/大乐透彩票并自动核对中奖结果的本地 Web 应用",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "dev": "node --env-file-if-exists=.env server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
