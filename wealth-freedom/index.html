@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="一个把生活开支、育儿、医疗和重大投入纳入计算的财富自由临界值测算工具。"
+    />
+    <meta name="theme-color" content="#07100b" />
+    <title>自由刻度 · 财富自由计算器</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%2307100b'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23d9ff7a' stroke-width='2'/%3E%3Cpath d='M18 32h28M32 18v28' stroke='%23d9ff7a' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23d9ff7a'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="cursor-glow" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="自由刻度首页">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span>
+        </span>
+        <span class="brand-copy">
+          <strong>自由刻度</strong>
+          <small>FREEDOM INDEX</small>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <a href="#calculator">开始测算</a>
+        <a href="#route">收入航线</a>
+        <a href="#model">理解模型</a>
+        <a href="#notes">边界说明</a>
+      </nav>
+
+      <div class="live-status" aria-label="模型状态：实时计算">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>LIVE MODEL</span>
+        <time id="headerDate"></time>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="hero-orbit orbit-one" aria-hidden="true"></div>
+        <div class="hero-orbit orbit-two" aria-hidden="true"></div>
+
+        <div class="hero-copy reveal">
+          <p class="eyebrow">
+            <span>STRICT MODE</span>
+            <span>本金不缩水 · 购买力不下降</span>
+          </p>
+          <h1 id="hero-title">
+            把自由，算成
+            <span>一个具体的数字。</span>
+          </h1>
+          <p class="hero-intro">
+            不问 500 万还是 1 个亿。只问你的生活值多少钱：每月想怎么过，
+            要不要孩子，如何给健康与住所留出余量。
+          </p>
+          <a class="primary-link" href="#calculator">
+            <span>测算我的临界值</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="hero-instrument reveal" aria-label="财富自由模型核心乘数">
+          <div class="instrument-label">
+            <span>SUSTAINABLE MULTIPLIER</span>
+            <span>实际收益率 2.5%</span>
+          </div>
+          <div class="instrument-core">
+            <div class="orbit-ring ring-a" aria-hidden="true"></div>
+            <div class="orbit-ring ring-b" aria-hidden="true"></div>
+            <div class="orbit-ring ring-c" aria-hidden="true"></div>
+            <span class="satellite satellite-a" aria-hidden="true"></span>
+            <span class="satellite satellite-b" aria-hidden="true"></span>
+            <div class="multiplier">
+              <strong id="heroMultiplier">480</strong>
+              <span>×</span>
+            </div>
+          </div>
+          <p>
+            月开销的
+            <strong>480 倍</strong>
+            ，构成你的日常自由底座
+          </p>
+          <div class="instrument-scale" aria-hidden="true">
+            <span>0</span>
+            <span>120</span>
+            <span>240</span>
+            <span>360</span>
+            <span>480×</span>
+          </div>
+        </div>
+
+        <div class="scroll-cue" aria-hidden="true">
+          <span></span>
+          <small>SCROLL TO CALCULATE</small>
+        </div>
+      </section>
+
+      <section class="calculator-section" id="calculator" aria-labelledby="calculator-title">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow"><span>01 / INPUT</span><span>你的生活，你的参数</span></p>
+            <h2 id="calculator-title">构造你的自由坐标</h2>
+          </div>
+          <p class="section-intro">
+            所有金额均为今天的购买力。拖动、输入或选择一套情景，
+            右侧数字会即时重算。
+          </p>
+        </div>
+
+        <div class="preset-row reveal" aria-label="快速情景">
+          <span class="preset-label">快速情景</span>
+          <button class="preset-button" type="button" data-preset="light">轻装版</button>
+          <button class="preset-button is-active" type="button" data-preset="balanced">
+            平衡版
+          </button>
+          <button class="preset-button" type="button" data-preset="metro">一线家庭</button>
+        </div>
+
+        <div class="workbench">
+          <form class="control-panel reveal" id="freedomForm" novalidate>
+            <div class="panel-topline">
+              <span>FREEDOM PARAMETERS</span>
+              <button class="text-button" type="button" id="resetButton">恢复默认</button>
+            </div>
+
+            <fieldset class="control-block">
+              <legend>
+                <span class="control-index">01</span>
+                <span>
+                  理想生活月开销
+                  <small>吃饭、旅行、娱乐等日常支出，不含房贷与育儿</small>
+                </span>
+              </legend>
+
+              <div class="money-control">
+                <span class="currency-mark">¥</span>
+                <input
+                  id="lifestyleInput"
+                  type="number"
+                  min="0"
+                  max="100000"
+                  step="100"
+                  value="10000"
+                  inputmode="numeric"
+                  data-state="lifestyle"
+                  aria-label="每月理想生活开销"
+                />
+                <span class="per-unit">/ 月</span>
+              </div>
+              <input
+                class="range-input"
+                id="lifestyleRange"
+                type="range"
+                min="0"
+                max="50000"
+                step="100"
+                value="10000"
+                aria-label="调整每月理想生活开销"
+              />
+              <div class="range-labels" aria-hidden="true">
+                <span>¥0</span>
+                <span>¥50,000</span>
+              </div>
+
+              <div class="inline-metrics">
+                <div>
+                  <small>年度开支</small>
+                  <strong id="annualSpend">¥120,000</strong>
+                </div>
+                <div>
+                  <small>日常自由底座</small>
+                  <strong id="lifestyleTargetInline">¥4,800,000</strong>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="control-block">
+              <legend>
+                <span class="control-index">02</span>
+                <span>
+                  孩子
+                  <small>每个孩子从备孕到成年的总成本，可按你的计划调整</small>
+                </span>
+              </legend>
+
+              <div class="segmented" role="group" aria-label="孩子数量">
+                <button type="button" data-child-count="0">0</button>
+                <button type="button" data-child-count="1" class="is-active">1</button>
+                <button type="button" data-child-count="2">2</button>
+                <button type="button" data-child-count="3">3</button>
+              </div>
+
+              <label class="compact-field">
+                <span>单孩终身成本</span>
+                <span class="compact-input">
+                  <span>¥</span>
+                  <input
+                    id="childCostInput"
+                    type="number"
+                    min="0"
+                    max="10000000"
+                    step="10000"
+                    value="580000"
+                    inputmode="numeric"
+                    data-state="childCost"
+                    aria-label="单个孩子终身成本"
+                  />
+                </span>
+              </label>
+            </fieldset>
+
+            <fieldset class="control-block two-column-block">
+              <div>
+                <legend>
+                  <span class="control-index">03</span>
+                  <span>
+                    健康储备
+                    <small>给自己与伴侣预留的医疗余量</small>
+                  </span>
+                </legend>
+                <div class="preset-pills" role="group" aria-label="健康储备快捷金额">
+                  <button type="button" data-health="100000">10 万</button>
+                  <button type="button" data-health="300000" class="is-active">30 万</button>
+                  <button type="button" data-health="600000">60 万</button>
+                </div>
+                <label class="compact-field">
+                  <span>自定义</span>
+                  <span class="compact-input">
+                    <span>¥</span>
+                    <input
+                      id="healthInput"
+                      type="number"
+                      min="0"
+                      max="50000000"
+                      step="10000"
+                      value="300000"
+                      inputmode="numeric"
+                      data-state="health"
+                      aria-label="健康储备金额"
+                    />
+                  </span>
+                </label>
+              </div>
+
+              <div>
+                <legend>
+                  <span class="control-index">04</span>
+                  <span>
+                    重大投入
+                    <small>住房、创业或其他一次性大项</small>
+                  </span>
+                </legend>
+                <div class="preset-pills" role="group" aria-label="重大投入快捷金额">
+                  <button type="button" data-capital="0" class="is-active">无</button>
+                  <button type="button" data-capital="1200000">120 万</button>
+                  <button type="button" data-capital="7000000">700 万</button>
+                </div>
+                <label class="compact-field">
+                  <span>自定义</span>
+                  <span class="compact-input">
+                    <span>¥</span>
+                    <input
+                      id="capitalInput"
+                      type="number"
+                      min="0"
+                      max="100000000"
+                      step="100000"
+                      value="0"
+                      inputmode="numeric"
+                      data-state="capital"
+                      aria-label="重大投入金额"
+                    />
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="control-block">
+              <legend>
+                <span class="control-index">05</span>
+                <span>
+                  当前可投资资产
+                  <small>用于计算完成度与距离目标的差额，不含自住房</small>
+                </span>
+              </legend>
+              <div class="asset-input-row">
+                <div class="money-control">
+                  <span class="currency-mark">¥</span>
+                  <input
+                    id="assetsInput"
+                    type="number"
+                    min="0"
+                    max="1000000000"
+                    step="10000"
+                    value="800000"
+                    inputmode="numeric"
+                    data-state="assets"
+                    aria-label="当前可投资资产"
+                  />
+                </div>
+                <div class="asset-summary">
+                  <small>完成度</small>
+                  <strong id="inlineProgress">14.1%</strong>
+                </div>
+              </div>
+            </fieldset>
+
+            <details class="advanced-panel">
+              <summary>
+                <span>高级参数</span>
+                <small>收益与通胀决定乘数</small>
+                <span class="summary-icon" aria-hidden="true"></span>
+              </summary>
+
+              <div class="advanced-content">
+                <div class="rate-control">
+                  <div class="rate-heading">
+                    <label for="nominalRange">长期名义投资回报</label>
+                    <output id="nominalOutput">4.5%</output>
+                  </div>
+                  <input
+                    class="range-input"
+                    id="nominalRange"
+                    type="range"
+                    min="3"
+                    max="10"
+                    step="0.1"
+                    value="4.5"
+                    aria-describedby="rateHint"
+                  />
+                </div>
+
+                <div class="rate-control">
+                  <div class="rate-heading">
+                    <label for="inflationRange">长期平均通胀</label>
+                    <output id="inflationOutput">2.0%</output>
+                  </div>
+                  <input
+                    class="range-input"
+                    id="inflationRange"
+                    type="range"
+                    min="0"
+                    max="6"
+                    step="0.1"
+                    value="2"
+                    aria-describedby="rateHint"
+                  />
+                </div>
+
+                <div class="real-return-card" id="rateHint">
+                  <span>长期实际收益率</span>
+                  <strong id="realRateOutput">2.5%</strong>
+                  <small>名义回报 − 通胀 = 实际回报</small>
+                </div>
+              </div>
+            </details>
+          </form>
+
+          <aside class="result-panel reveal" aria-labelledby="result-title">
+            <div class="result-topline">
+              <div>
+                <span class="eyebrow"><span>LIVE / OUTPUT</span><span>实时结果</span></span>
+                <h2 id="result-title">你的财富自由临界值</h2>
+              </div>
+              <button class="icon-button" id="copyButton" type="button" aria-label="复制测算结果">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                  <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                </svg>
+                <span id="copyLabel">复制结果</span>
+              </button>
+            </div>
+
+            <div class="hero-result" aria-live="polite">
+              <div class="result-amount">
+                <span class="result-prefix">¥</span>
+                <strong id="targetNumber">5,680,000</strong>
+              </div>
+              <div class="result-meta">
+                <span id="targetCompact">568 万</span>
+                <span class="meta-divider"></span>
+                <span id="resultBadge">严格版自由线</span>
+              </div>
+            </div>
+
+            <div class="formula-strip" aria-label="计算公式">
+              <span>计算公式</span>
+              <code id="formulaText">480 × 10,000 + 580,000 × 1 + 300,000 + 0</code>
+            </div>
+
+            <div class="progress-card">
+              <div
+                class="progress-ring"
+                id="progressRing"
+                role="img"
+                aria-label="当前完成度 14.1%"
+              >
+                <div class="progress-ring-inner">
+                  <strong id="progressNumber">14.1%</strong>
+                  <span>已抵达</span>
+                </div>
+              </div>
+
+              <div class="progress-copy">
+                <span class="micro-label">DISTANCE TO FREEDOM</span>
+                <strong id="gapTitle">还差 ¥4,880,000</strong>
+                <p id="gapDescription">
+                  当前资产已覆盖 14.1%。继续扩大本金，或重新校准每月支出。
+                </p>
+              </div>
+            </div>
+
+            <div class="breakdown-block">
+              <div class="breakdown-heading">
+                <h3>目标构成</h3>
+                <span>100%</span>
+              </div>
+              <div class="composition-bar" id="compositionBar" aria-hidden="true">
+                <span class="segment lifestyle-segment"></span>
+                <span class="segment child-segment"></span>
+                <span class="segment health-segment"></span>
+                <span class="segment capital-segment"></span>
+              </div>
+              <div class="breakdown-legend">
+                <div>
+                  <span class="legend-dot lifestyle-dot"></span>
+                  <span>日常自由</span>
+                  <strong id="lifestyleValue">¥4,800,000</strong>
+                </div>
+                <div>
+                  <span class="legend-dot child-dot"></span>
+                  <span>育儿计划</span>
+                  <strong id="childValue">¥580,000</strong>
+                </div>
+                <div>
+                  <span class="legend-dot health-dot"></span>
+                  <span>健康储备</span>
+                  <strong id="healthValue">¥300,000</strong>
+                </div>
+                <div>
+                  <span class="legend-dot capital-dot"></span>
+                  <span>重大投入</span>
+                  <strong id="capitalValue">¥0</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="insight-grid">
+              <div class="insight-card">
+                <small>扣除大项后的月开销额度</small>
+                <strong id="safeMonthly">¥0</strong>
+                <span>可永续覆盖的日常支出</span>
+              </div>
+              <div class="insight-card">
+                <small>目标乘数 · 实际收益率</small>
+                <strong id="multiplierMetric">480× · 实际 2.5%</strong>
+                <span>按你的收益假设</span>
+              </div>
+            </div>
+
+            <div class="warning-message" id="warningMessage" hidden role="alert">
+              实际收益率必须大于 0，否则无法形成“本金不缩水”的永续现金流。
+            </div>
+
+            <p class="result-note">
+              这是规划模型，不是收益承诺。市场波动、税费、重大疾病与政策变化都可能改变结果。
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="route-section" id="route" aria-labelledby="route-title">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow"><span>03 / ROUTE</span><span>把距离变成路径</span></p>
+            <h2 id="route-title">工资，怎样变成自由本金</h2>
+          </div>
+          <p class="section-intro">
+            输入税后收入和当前支出，自动算出年工资、年总收入与可投资结余，
+            再结合资产复利，换算你还需要多少年抵达自由线。
+          </p>
+        </div>
+
+        <div class="route-panel reveal">
+          <div class="route-income-grid">
+            <div class="route-income-intro">
+              <span class="micro-label">ANNUAL CASH FLOW</span>
+              <h3>收入是水流，<br />结余才是燃料。</h3>
+              <p>
+                所有收入都按税后到手填写，并以今天购买力计算。
+                当前支出默认等于理想月开销，也可以单独调整。
+              </p>
+            </div>
+
+            <div class="route-income-inputs">
+              <div class="route-field">
+                <label for="monthlySalaryInput">
+                  每月税后工资
+                  <small>按实际到手收入填写</small>
+                </label>
+                <span class="compact-input">
+                  <span>¥</span>
+                  <input
+                    id="monthlySalaryInput"
+                    type="number"
+                    min="0"
+                    max="10000000"
+                    step="1000"
+                    value="20000"
+                    inputmode="numeric"
+                    data-state="salary"
+                    aria-label="每月税后工资"
+                  />
+                </span>
+              </div>
+
+              <div class="route-field">
+                <label for="otherIncomeInput">
+                  其他税后收入
+                  <small>副业、租金、分红等持续收入</small>
+                </label>
+                <div class="other-income-row">
+                  <span class="compact-input">
+                    <span>¥</span>
+                    <input
+                      id="otherIncomeInput"
+                      type="number"
+                      min="0"
+                      max="100000000"
+                      step="1000"
+                      value="0"
+                      inputmode="numeric"
+                      data-state="otherIncome"
+                      aria-label="其他税后收入"
+                    />
+                  </span>
+                  <div class="income-frequency" role="group" aria-label="其他收入频率">
+                    <button type="button" data-income-frequency="monthly" class="is-active">
+                      每月
+                    </button>
+                    <button type="button" data-income-frequency="yearly">每年</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="route-field">
+                <label for="currentSpendInput">
+                  当前每月支出
+                  <small>用于计算现在实际能沉淀多少结余</small>
+                </label>
+                <span class="compact-input">
+                  <span>¥</span>
+                  <input
+                    id="currentSpendInput"
+                    type="number"
+                    min="0"
+                    max="1000000"
+                    step="500"
+                    value="10000"
+                    inputmode="numeric"
+                    data-state="currentSpend"
+                    aria-label="当前每月支出"
+                  />
+                </span>
+              </div>
+            </div>
+
+            <div class="route-income-metrics" aria-live="polite">
+              <div class="income-metric">
+                <small>年工资总额</small>
+                <strong id="annualSalaryValue">¥240,000</strong>
+                <span>月薪 × 12</span>
+              </div>
+              <div class="income-metric">
+                <small>年其他收入</small>
+                <strong id="annualOtherValue">¥0</strong>
+                <span id="otherIncomeFrequencyLabel">按每月收入折算</span>
+              </div>
+              <div class="income-metric">
+                <small>年度总收入</small>
+                <strong id="annualIncomeValue">¥240,000</strong>
+                <span>工资 + 其他收入</span>
+              </div>
+              <div class="income-metric is-highlight">
+                <small>每年可投资结余</small>
+                <strong id="annualSavingsValue">¥120,000</strong>
+                <span id="savingsRateValue">结余率 50%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="route-journey">
+            <div class="route-visual">
+              <div class="route-track">
+                <div class="route-fill" id="routeFill"></div>
+                <span class="route-marker route-start" aria-hidden="true"></span>
+                <span class="route-marker route-current" id="routeCurrentMarker" aria-hidden="true"></span>
+                <span class="route-marker route-end" aria-hidden="true"></span>
+              </div>
+              <div class="route-labels">
+                <span>今天</span>
+                <span id="routeProgressLabel">14.1%</span>
+                <span>自由线</span>
+              </div>
+              <div class="route-assumptions">
+                <span>当前资产 <strong id="routeAssets">¥800,000</strong></span>
+                <span>目标 <strong id="routeTarget">¥5,680,000</strong></span>
+                <span>实际复利 <strong id="routeRate">2.5%</strong></span>
+              </div>
+            </div>
+
+            <div class="route-outcome">
+              <span class="micro-label">ESTIMATED TIMELINE</span>
+              <div>
+                <strong id="yearsToFreedom">25</strong>
+                <span id="yearsUnit">年</span>
+              </div>
+              <p id="routeNarrative">
+                按年工资 ¥240,000、其他收入 ¥0，每年结余 ¥120,000，
+                以实际收益 2.5% 复利估算。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="model-section" id="model" aria-labelledby="model-title">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow"><span>04 / MODEL</span><span>数字背后的逻辑</span></p>
+            <h2 id="model-title">480 倍，不是魔法</h2>
+          </div>
+          <p class="section-intro">
+            它只是一个保守的永续现金流近似：让资产每年的实际收益，
+            足以覆盖你一年的生活支出。
+          </p>
+        </div>
+
+        <div class="model-grid">
+          <article class="model-card reveal">
+            <span class="model-index">01</span>
+            <div class="model-icon formula-icon" aria-hidden="true">Δ</div>
+            <h3>先扣掉通胀</h3>
+            <p>
+              名义收益不等于购买力增长。4.5% 的名义回报减去 2.0% 通胀，
+              剩下 2.5% 的实际收益率，才是长期可消费的部分。
+            </p>
+            <div class="model-equation">4.5% − 2.0% = 2.5%</div>
+          </article>
+
+          <article class="model-card reveal">
+            <span class="model-index">02</span>
+            <div class="model-icon multiplier-icon" aria-hidden="true">∞</div>
+            <h3>把年支出变成永续本金</h3>
+            <p>
+              年支出 = 12 × 月支出。以 2.5% 实际收益率估算，
+              所需本金为 12 ÷ 2.5% = 480 倍月支出。
+            </p>
+            <div class="model-equation">12 ÷ 2.5% = 480×</div>
+          </article>
+
+          <article class="model-card reveal">
+            <span class="model-index">03</span>
+            <div class="model-icon universe-icon" aria-hidden="true">＋</div>
+            <h3>人生大项单独计算</h3>
+            <p>
+              育儿、健康与住房的波动很大，塞进一个平均月支出里会失真。
+              把它们单列，才能看清什么是长期现金流，什么是一次性目标。
+            </p>
+            <div class="model-equation">底座 + 大项 = 你的临界值</div>
+          </article>
+        </div>
+
+        <div class="benchmark-panel reveal">
+          <div class="benchmark-copy">
+            <p class="eyebrow"><span>REFERENCE</span><span>一种参照，不是标准答案</span></p>
+            <h3>若每月只花 2,990 元，且没有额外大项，临界值约 143.5 万。</h3>
+            <p>
+              这来自原公式对城镇居民平均月支出的一个示例估算。
+              平均数不会替你决定生活方式，但它能提醒你：
+              真正拉开差距的，不只是收益率，还有你把钱花在哪里。
+            </p>
+          </div>
+          <div class="benchmark-number" aria-label="示例临界值 143.5 万">
+            <span>¥1,435,200</span>
+            <small>示例口径 · 不含独立列出的育儿、医疗与大项投入</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="notes-section" id="notes" aria-labelledby="notes-title">
+        <div class="notes-heading reveal">
+          <p class="eyebrow"><span>05 / BOUNDARIES</span><span>清醒地使用模型</span></p>
+          <h2 id="notes-title">它算的是自由的条件，<br />不是自由的感受。</h2>
+        </div>
+
+        <div class="notes-grid">
+          <div class="note-item reveal">
+            <span>01</span>
+            <h3>收益不是常数</h3>
+            <p>
+              实际市场回报会剧烈波动，长期平均也不保证每一年都兑现。
+              建议额外保留现金缓冲，并定期重新评估。
+            </p>
+          </div>
+          <div class="note-item reveal">
+            <span>02</span>
+            <h3>通胀会被生活改写</h3>
+            <p>
+              医疗、教育、住房和地区差异可能让个人通胀偏离平均值。
+              用你自己的长期开支感受校准参数，比追求一个漂亮数字重要。
+            </p>
+          </div>
+          <div class="note-item reveal">
+            <span>03</span>
+            <h3>自由不只有一种形态</h3>
+            <p>
+              资产缓慢下降、阶段性工作、降低居住成本，都是可行选择。
+              严格版本只是给你一条更稳的基准线，不是唯一人生答案。
+            </p>
+          </div>
+        </div>
+
+        <blockquote class="closing-quote reveal">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <p>
+            财富自由不是把人生切成“先受苦，后享乐”的两段。
+            <br />
+            它更像一张地图：让你知道，此刻的选择正在把你带向哪里。
+          </p>
+          <footer>清醒地计算 · 认真地生活</footer>
+        </blockquote>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="#top" aria-label="回到顶部">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span class="brand-copy">
+          <strong>自由刻度</strong>
+          <small>FREEDOM INDEX</small>
+        </span>
+      </a>
+      <p>
+        本工具仅作个人财务规划参考，不构成投资、税务或法律建议。
+        模型参数不代表未来收益。
+      </p>
+      <span class="footer-stamp">CALCULATED WITH INTENT · <span id="footerYear"></span></span>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">结果已复制</div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
