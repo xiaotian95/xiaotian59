@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 手机优先：按设备宽度排版，并适配刘海屏安全区 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta
+    name="description"
+    content="双色球号码本地随机推荐。预测模式与反过来推荐各生成 10 组，不能预测开奖，不构成投注建议。"
+  />
+  <title>双色球随机推荐</title>
+  <style>
+    /* 深色科技风配色：红球 / 蓝球对比要在手机上一下能认出来 */
+    :root {
+      --bg: #071018;
+      --card: rgba(16, 28, 40, 0.92);
+      --line: rgba(150, 190, 220, 0.2);
+      --text: #e8f1f8;
+      --muted: #93a8ba;
+      --red: #e23b3b;
+      --red-deep: #9f1d1d;
+      --blue: #2f74f5;
+      --blue-deep: #1a45b8;
+      --warn: #ffd89a;
+      --warn-bg: #3a2c14;
+      --accent: #3ee0c5;
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      color: var(--text);
+      font-family: "PingFang SC", "HarmonyOS Sans SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(900px 420px at 50% -80px, rgba(62, 224, 197, 0.16), transparent 60%),
+        radial-gradient(700px 380px at 100% 20%, rgba(47, 116, 245, 0.16), transparent 55%),
+        var(--bg);
+    }
+
+    .page {
+      width: min(100%, 480px);
+      margin: 0 auto;
+      padding:
+        calc(12px + env(safe-area-inset-top))
+        16px
+        calc(36px + env(safe-area-inset-bottom));
+    }
+
+    /* 免责声明吸顶，往下翻结果时仍然看得见 */
+    .disclaimer-bar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin: 0 -16px 16px;
+      padding: 10px 16px 8px;
+      background: #071018;
+    }
+
+    .disclaimer {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid #e2b15a;
+      background: var(--warn-bg);
+      color: var(--warn);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.55;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 4px 0 6px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+    }
+
+    .lead {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    /* 反过来推荐的规则始终展示，不藏进结果里 */
+    .rules {
+      margin-top: 18px;
+      padding: 14px 14px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(62, 224, 197, 0.45);
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .rules h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .rules .punch {
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(62, 224, 197, 0.12);
+      color: #d8fff6;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .rules ol {
+      margin: 0;
+      padding-left: 1.2em;
+      color: #d5e2ec;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .rules li + li {
+      margin-top: 6px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* 大按钮，方便单手点 */
+    button {
+      width: 100%;
+      min-height: 58px;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 16px;
+      font: inherit;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    #btn-predict {
+      color: #fff;
+      background: linear-gradient(180deg, #ff5d5d, var(--red) 42%, var(--red-deep));
+      box-shadow: 0 8px 18px rgba(226, 59, 59, 0.35);
+    }
+
+    #btn-reverse {
+      color: #06221c;
+      background: linear-gradient(180deg, #7ff6e4, var(--accent) 45%, #14b89a);
+      box-shadow: 0 8px 18px rgba(62, 224, 197, 0.28);
+    }
+
+    .hint {
+      margin: 10px 2px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    #output {
+      margin-top: 18px;
+      scroll-margin-top: 160px;
+    }
+
+    .placeholder {
+      padding: 22px 14px;
+      border-radius: 16px;
+      border: 1px dashed var(--line);
+      color: var(--muted);
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .result-head h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .result-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .pool {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 180, 84, 0.45);
+      background: rgba(58, 36, 16, 0.55);
+    }
+
+    .pool h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .pool-row + .pool-row {
+      margin-top: 10px;
+    }
+
+    .pool-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #ffd7a1;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .note {
+      margin: 10px 0 0;
+      color: #f3ddc0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .tickets {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .ticket {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+
+    .ticket-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .ticket-index {
+      font-size: 13px;
+      font-weight: 800;
+      color: #c5d5e2;
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255, 180, 84, 0.18);
+      color: #ffd7a1;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .balls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 圆形号码：红底白字、蓝底白字 */
+    .ball {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      box-shadow: inset 0 -6px 10px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .ball.red {
+      background: radial-gradient(circle at 35% 30%, #ff8d8d, var(--red) 46%, var(--red-deep));
+    }
+
+    .ball.blue {
+      background: radial-gradient(circle at 35% 30%, #9ec0ff, var(--blue) 48%, var(--blue-deep));
+    }
+
+    .ball.mini {
+      width: 34px;
+      height: 34px;
+      font-size: 13px;
+    }
+
+    /* 红球一行、蓝球一行，避免窄屏把加号挤到下一行 */
+    .number-row + .number-row {
+      margin-top: 8px;
+    }
+
+    .row-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 360px) {
+      h1 {
+        font-size: 26px;
+      }
+
+      .ball {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="disclaimer-bar">
+      <!-- 固定可见的免责声明，措辞按需求原文 -->
+      <p class="disclaimer" role="note">
+        号码均为浏览器本地随机生成，不能预测开奖结果，不构成投注建议；彩票有风险，请理性购彩。
+      </p>
+    </div>
+
+    <p class="eyebrow">本地随机 · 不联网</p>
+    <h1>双色球随机推荐</h1>
+    <p class="lead">两种方式各生成 10 组。每组 6 个红球（1–33，不重复，升序）加 1 个蓝球（1–16）。点一次重新生成一次，号码只留在这台手机里。</p>
+
+    <section class="rules" aria-labelledby="rules-title">
+      <h2 id="rules-title">反过来推荐 · 固定规则</h2>
+      <p class="punch">反过来 = 避开本轮随机划出的热号。热号池每次点击都会重抽，并显示在结果上方。</p>
+      <ol>
+        <li>先划热号池：红球从 1–33 中随机选 12 个，蓝球从 1–16 中随机选 4 个。</li>
+        <li>再从热号之外的冷号池里随机生成 10 组，每组仍是 6 个不重复红球 + 1 个蓝球。</li>
+        <li>冷号红球一般有 21 个，足够选满 6 个。若极少情况冷号池凑不满 6 个红球，会从热号中补足，该组会标明「含热号补足」。</li>
+      </ol>
+    </section>
+
+    <div class="actions">
+      <button id="btn-predict" type="button">预测 · 随机 10 组</button>
+      <button id="btn-reverse" type="button">反过来推荐 · 避开热号</button>
+    </div>
+    <p class="hint">两个按钮互不影响。可以反复点，每次都整批换新。「预测」只是这个按钮的名字，开出的同样是本地随机号。</p>
+
+    <section id="output" aria-live="polite">
+      <p class="placeholder">还没有号码。点上面任一按钮，就会在本机生成 10 组。</p>
+    </section>
+  </main>
+
+  <script>
+    // 红球、蓝球的取值范围，和每批组数
+    const RED_MAX = 33;
+    const BLUE_MAX = 16;
+    const RED_PICK = 6;
+    const BATCH_SIZE = 10;
+    const HOT_RED_COUNT = 12;
+    const HOT_BLUE_COUNT = 4;
+
+    const output = document.getElementById("output");
+
+    /**
+     * 生成闭区间整数序列，例如 1 到 33。
+     */
+    function rangeInclusive(min, max) {
+      const list = [];
+      for (let n = min; n <= max; n += 1) list.push(n);
+      return list;
+    }
+
+    /**
+     * 在 0 .. n-1 里取均匀随机下标。
+     * 用 crypto.getRandomValues，并丢掉会造成取模偏差的尾数。
+     */
+    function randomIndex(n) {
+      if (n <= 1) return 0;
+      const limit = Math.floor(0x100000000 / n) * n;
+      const buf = new Uint32Array(1);
+      let value = 0;
+      do {
+        crypto.getRandomValues(buf);
+        value = buf[0];
+      } while (value >= limit);
+      return value % n;
+    }
+
+    /**
+     * 从池子里不放回抽取 count 个，结果按号码从小到大排列。
+     * 不改动传入的原数组。
+     */
+    function drawSorted(pool, count) {
+      const arr = pool.slice();
+      const take = Math.min(count, arr.length);
+      for (let i = 0; i < take; i += 1) {
+        const j = i + randomIndex(arr.length - i);
+        const swap = arr[i];
+        arr[i] = arr[j];
+        arr[j] = swap;
+      }
+      return arr.slice(0, take).sort((a, b) => a - b);
+    }
+
+    /** 两位显示，方便号码对齐 */
+    function pad2(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    /** 创建一个圆形号码 */
+    function makeBall(n, color, mini) {
+      const el = document.createElement("span");
+      el.className = mini ? `ball ${color} mini` : `ball ${color}`;
+      el.textContent = pad2(n);
+      el.setAttribute("aria-label", `${color === "red" ? "红球" : "蓝球"} ${n}`);
+      return el;
+    }
+
+    /** 红球、蓝球分成两行，手机窄屏也不会把蓝球拆散 */
+    function fillBalls(container, reds, blue) {
+      container.append(
+        makeNumberRow("红球", reds.map((n) => makeBall(n, "red", false))),
+        makeNumberRow("蓝球", [makeBall(blue, "blue", false)]),
+      );
+    }
+
+    function makeNumberRow(label, balls) {
+      const row = document.createElement("div");
+      row.className = "number-row";
+      const lab = document.createElement("span");
+      lab.className = "row-label";
+      lab.textContent = label;
+      const wrap = document.createElement("div");
+      wrap.className = "balls";
+      balls.forEach((ball) => wrap.appendChild(ball));
+      row.append(lab, wrap);
+      return row;
+    }
+
+    /**
+     * 模式①「预测」：每组直接从全部号码里随机抽。
+     * 红球 6 个不重复，蓝球 1 个，共 10 组。
+     */
+    function buildPredictBatch() {
+      const redsPool = rangeInclusive(1, RED_MAX);
+      const bluesPool = rangeInclusive(1, BLUE_MAX);
+      const tickets = [];
+      for (let i = 0; i < BATCH_SIZE; i += 1) {
+        tickets.push({
+          reds: drawSorted(redsPool, RED_PICK),
+          blue: drawSorted(bluesPool, 1)[0],
+          supplemented: false,
+        });
+      }
+      return tickets;
+    }
+
+    /**
+     * 模式②「反过来推荐」：
+     * 先随机划热号池（红 12、蓝 4），再从热号之外生成 10 组。
+     * 冷号红球不够 6 个时，用热号补足，并打上标记。
+     */
+    function buildReverseBatch(hotRedCount = HOT_RED_COUNT, hotBlueCount = HOT_BLUE_COUNT) {
+      const allReds = rangeInclusive(1, RED_MAX);
+      const allBlues = rangeInclusive(1, BLUE_MAX);
+      // 页面按钮走默认：热红 12、热蓝 4。参数只为核对「冷号不够就补足」这条分支。
+      const hotReds = drawSorted(allReds, hotRedCount);
+      const hotBlues = drawSorted(allBlues, hotBlueCount);
+      const hotRedSet = new Set(hotReds);
+      const hotBlueSet = new Set(hotBlues);
+      const coldReds = allReds.filter((n) => !hotRedSet.has(n));
+      const coldBlues = allBlues.filter((n) => !hotBlueSet.has(n));
+
+      const tickets = [];
+      for (let i = 0; i < BATCH_SIZE; i += 1) {
+        let supplemented = false;
+        let redSource = coldReds;
+        if (coldReds.length < RED_PICK) {
+          // 极少情况：冷号不够，缺几个就从本轮热号里补几个，补足后恰好 6 个
+          supplemented = true;
+          const extra = drawSorted(hotReds, RED_PICK - coldReds.length);
+          redSource = coldReds.concat(extra);
+        }
+
+        let blue;
+        if (coldBlues.length > 0) {
+          blue = drawSorted(coldBlues, 1)[0];
+        } else {
+          supplemented = true;
+          blue = drawSorted(hotBlues, 1)[0];
+        }
+
+        tickets.push({
+          reds: drawSorted(redSource, RED_PICK),
+          blue,
+          supplemented,
+        });
+      }
+
+      return {
+        hotReds,
+        hotBlues,
+        coldRedCount: coldReds.length,
+        coldBlueCount: coldBlues.length,
+        tickets,
+      };
+    }
+
+    /** 渲染 10 组号码。hot 有值时额外画出本轮热号池。 */
+    function renderResult(modeTitle, summary, tickets, hot) {
+      output.replaceChildren();
+
+      const head = document.createElement("div");
+      head.className = "result-head";
+      const title = document.createElement("h2");
+      title.textContent = modeTitle;
+      const desc = document.createElement("p");
+      desc.textContent = summary;
+      head.append(title, desc);
+      output.appendChild(head);
+
+      if (hot) {
+        const pool = document.createElement("section");
+        pool.className = "pool";
+        pool.setAttribute("aria-label", "本轮热号池");
+
+        const poolTitle = document.createElement("h3");
+        poolTitle.textContent = "本轮热号池（推荐已避开这些号）";
+        pool.appendChild(poolTitle);
+
+        pool.appendChild(buildPoolRow(`红球热号 ${hot.hotReds.length} 个`, hot.hotReds, "red"));
+        pool.appendChild(buildPoolRow(`蓝球热号 ${hot.hotBlues.length} 个`, hot.hotBlues, "blue"));
+
+        const note = document.createElement("p");
+        note.className = "note";
+        const supplementedCount = tickets.filter((t) => t.supplemented).length;
+        if (supplementedCount > 0) {
+          note.textContent = `冷号红球现有 ${hot.coldRedCount} 个。有 ${supplementedCount} 组冷号不够，已从热号补足，并在组旁标明。`;
+        } else {
+          note.textContent = `冷号红球 ${hot.coldRedCount} 个、冷号蓝球 ${hot.coldBlueCount} 个。本轮 10 组都从冷号池抽出，没有用热号补足。`;
+        }
+        pool.appendChild(note);
+        output.appendChild(pool);
+      }
+
+      const list = document.createElement("div");
+      list.className = "tickets";
+      tickets.forEach((ticket, index) => {
+        const card = document.createElement("article");
+        card.className = "ticket";
+
+        const top = document.createElement("div");
+        top.className = "ticket-top";
+        const indexEl = document.createElement("span");
+        indexEl.className = "ticket-index";
+        indexEl.textContent = `第 ${index + 1} 组`;
+        top.appendChild(indexEl);
+        if (ticket.supplemented) {
+          const badge = document.createElement("span");
+          badge.className = "badge";
+          badge.textContent = "含热号补足";
+          top.appendChild(badge);
+        }
+
+        const balls = document.createElement("div");
+        balls.className = "balls";
+        fillBalls(balls, ticket.reds, ticket.blue);
+
+        card.append(top, balls);
+        list.appendChild(card);
+      });
+      output.appendChild(list);
+
+      // 滚到结果区，并让开吸顶免责声明，避免标题被挡住
+      const bar = document.querySelector(".disclaimer-bar");
+      const offset = bar.getBoundingClientRect().height + 8;
+      const top = window.scrollY + output.getBoundingClientRect().top - offset;
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+      window.scrollTo({ top: Math.max(0, top), behavior });
+    }
+
+    /** 热号池里的一行号码 */
+    function buildPoolRow(label, numbers, color) {
+      const row = document.createElement("div");
+      row.className = "pool-row";
+      const lab = document.createElement("span");
+      lab.className = "pool-label";
+      lab.textContent = label;
+      const balls = document.createElement("div");
+      balls.className = "balls";
+      numbers.forEach((n) => balls.appendChild(makeBall(n, color, true)));
+      row.append(lab, balls);
+      return row;
+    }
+
+    document.getElementById("btn-predict").addEventListener("click", () => {
+      const tickets = buildPredictBatch();
+      renderResult(
+        "预测 · 10 组",
+        "从全部红球、蓝球里本地随机抽出。再点按钮会整批重抽。",
+        tickets,
+        null,
+      );
+    });
+
+    document.getElementById("btn-reverse").addEventListener("click", () => {
+      const batch = buildReverseBatch();
+      renderResult(
+        "反过来推荐 · 10 组",
+        "先随机划定下面的热号池，再从热号之外抽号。再点一次会重划热号并重抽 10 组。",
+        batch.tickets,
+        batch,
+      );
+    });
+  </script>
+</body>
+</html>
